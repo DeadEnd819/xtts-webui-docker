@@ -1,0 +1,17 @@
+services:
+  xtts:
+    build: .
+    image: local/xtts-webui:latest
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8010:8010"
+    volumes:
+      # директории на хосте для моделей/выхода/конфига — создай где тебе удобно
+      - ./models:/opt/xtts/models
+      - ./output:/opt/xtts/output
+      - ./config:/opt/xtts/config
+    shm_size: "1g"
+    runtime: nvidia
+    restart: unless-stopped
