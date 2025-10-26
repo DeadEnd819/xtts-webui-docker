@@ -40,6 +40,12 @@ RUN python -m pip install --no-cache-dir --use-deprecated=legacy-resolver -r /op
 # Фиксируем совместимые версии gradio для исправления бага
 RUN python -m pip install --no-cache-dir --force-reinstall gradio==4.29.0 gradio-client==0.16.1
 
+# Копируем скрипт для патчинга
+COPY patch_gradio.py /tmp/patch_gradio.py
+
+# Патчим баг в gradio_client/utils.py
+RUN python /tmp/patch_gradio.py /opt/venv/lib/python3.11/site-packages/gradio_client/utils.py
+
 # Дополнительные пакеты безопасности
 RUN python -m pip install --no-cache-dir requests pyyaml
 
@@ -52,4 +58,5 @@ EXPOSE 8010
 
 # Команда запуска
 CMD ["python", "app.py", "--device", "cuda", "--host", "0.0.0.0", "--port", "8010"]
+
 
