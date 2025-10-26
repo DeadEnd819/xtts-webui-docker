@@ -49,6 +49,12 @@ RUN python /tmp/patch_gradio.py /opt/venv/lib/python3.11/site-packages/gradio_cl
 # Дополнительные пакеты безопасности
 RUN python -m pip install --no-cache-dir requests pyyaml
 
+# Обновляем tabulate для совместимости с pandas
+RUN python -m pip install --no-cache-dir --upgrade "tabulate>=0.9.0"
+
+# Исправляем опечатку в reference_speaker.py
+RUN sed -i 's/resemble_enchance_audio/resemble_enhance_audio/g' /opt/xtts/modules/text2voice/reference_speaker.py
+
 # Создаём необходимые директории
 RUN mkdir -p /opt/xtts/models /opt/xtts/output /opt/xtts/config /opt/xtts/speakers
 
