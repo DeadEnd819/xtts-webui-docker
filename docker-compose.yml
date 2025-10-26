@@ -2,16 +2,25 @@ services:
   xtts:
     build: .
     image: local/xtts-webui:latest
+    container_name: xtts-webui
+    restart: unless-stopped
+    # GPU visibility
     environment:
-      - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    # expose port to host
     ports:
       - "8010:8010"
+    # Persist models/config/output so they won't be redownloaded each run
     volumes:
-      # директории на хосте для моделей/выхода/конфига — создай где тебе удобно
       - ./models:/opt/xtts/models
       - ./output:/opt/xtts/output
       - ./config:/opt/xtts/config
-    shm_size: "1g"
+      # persist silero models which are downloaded into site-packages
+      - ./silero_models:/opt/venv/lib/python3.11/site-packages/silero_tts/silero_models
+      # optionally persist any xtts cache
+      - ./xtts-cache:/opt/xtts/.cache
+    shm_size: "2g"
+    # Use Docker's legacy nvidia runtime or modern device request depending on your setup.
+    # If `runtime: nvidia` works for you, keep it; else remove it and Docker will use device_requests.
     runtime: nvidia
-    restart: unless-stopped

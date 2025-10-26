@@ -3,4 +3,6 @@
 /config/**/*
 /models/**/*
 /output/**/*
+/silero_models/**/*
+/xtts-cache/**/*
 
